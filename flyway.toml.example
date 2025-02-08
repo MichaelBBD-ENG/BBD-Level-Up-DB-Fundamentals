@@ -1,0 +1,24 @@
+# Database Connection
+url = "jdbc:postgresql://localhost:5432/db"  
+user = "myuser"                     # Your username
+password = "mypassword"             # Your password
+
+# Locations of SQL Scripts
+locations = ["filesystem:sql"]
+
+# Schema Versioning
+baselineOnMigrate = true            # Set to true if the database already exists
+baselineVersion = "1"               # The version to start tracking from
+validateOnMigrate = true            # Ensure migration scripts haven't been modified
+cleanDisabled = true                # Prevent accidental database wipe
+outOfOrder = false                  # Prevent applying migrations out of sequence
+reportEnabled = true                # report migration status
+
+# SQL Migration Behavior
+sqlMigrationPrefix = "V"            # Prefix for versioned migrations
+repeatableSqlMigrationPrefix = "R"  # Prefix for repeatable migrations
+sqlMigrationSeparator = "__"        # Separator between version and description
+sqlMigrationSuffixes = [".sql"]     # Migration file suffixes
+
+# Logging & Output
+outputQueryResults = true           # Show results of SQL statements
