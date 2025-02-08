@@ -4,10 +4,10 @@ This a repo that contains all the work that went into creating a DB for the DB f
 #### To use the system, invoke the bbdlu cli script, it will help you.
 on unix os:
 ```
-./bbdlu.sh -help
+./bbdlu.sh --help
 ```
 
 on windows:
 ```
-bbdlu.bat -help
+bbdlu.bat --help
 ```
