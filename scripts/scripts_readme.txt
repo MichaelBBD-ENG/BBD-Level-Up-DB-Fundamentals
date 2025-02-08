@@ -1,0 +1,1 @@
+any important bash/bat scripts that will speed up development should live here
