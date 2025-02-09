@@ -31,7 +31,7 @@ function decrypt_env {
 
 # Show version
 function show_version {
-    echo "CLI Template Version 0.1.0"
+    echo "bbdlu Version 0.1.0"
 }
 
 # Start Docker containers

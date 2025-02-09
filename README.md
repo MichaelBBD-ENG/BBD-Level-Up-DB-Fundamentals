@@ -11,3 +11,6 @@ on windows:
 ```
 bbdlu.bat --help
 ```
+
+> [!NOTE]  
+> We would prefer if you use git-bash
