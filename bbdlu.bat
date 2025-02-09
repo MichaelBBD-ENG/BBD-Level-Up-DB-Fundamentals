@@ -108,12 +108,12 @@ goto :eof
 
 :flyway_info
 :: Display the Flyway migration status
-flyway -configFiles=flyway.toml info
+flyway -configFiles=flyway.conf info
 goto :eof
 
 :flyway_migrate
 :: Perform Flyway migrations
-flyway -configFiles=flyway.toml migrate
+flyway -configFiles=flyway.conf migrate
 goto :eof
 
 :end

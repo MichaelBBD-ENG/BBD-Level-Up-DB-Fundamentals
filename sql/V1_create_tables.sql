@@ -1,11 +1,11 @@
-CREATE TABLE "contact_information" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "contact_information" (
   "id" integer PRIMARY KEY,
   "phone" varchar,
   "email" varchar,
   "address" varchar
 );
 
-CREATE TABLE "users" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "users" (
   "id" integer PRIMARY KEY,
   "first_name" varchar,
   "last_name" varchar,
@@ -15,9 +15,9 @@ CREATE TABLE "users" IF NOT EXISTS(
   FOREIGN KEY ("contact_id") REFERENCES "contact_information"("id") ON DELETE CASCADE
 );
 
-CREATE TYPE bean_rarity_enum_type AS ENUM ('MoreCommon', 'Common', 'LessCommon', 'Rare', 'MoreRare');
+CREATE TYPE bean_rarity_enum_type AS ENUM ('Common', 'Rare', 'Epic', 'Legendary', 'Otherworldly');
 
-CREATE TABLE "beans" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "beans" (
   "id" integer PRIMARY KEY,
   "name" varchar,
   "description" text,
@@ -28,14 +28,14 @@ CREATE TABLE "beans" IF NOT EXISTS(
 
 CREATE TYPE user_roles_enum_type AS ENUM ('Customer', 'Employee');
 
-CREATE TABLE "user_roles" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "user_roles" (
   "id" integer PRIMARY KEY,
   "role" user_roles_enum_type NOT NULL,
   "user_id" integer,
   FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
 );
 
-CREATE TABLE "suppliers" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "suppliers" (
   "id" integer PRIMARY KEY,
   "name" varchar,
   "contact_id" integer,
@@ -44,7 +44,7 @@ CREATE TABLE "suppliers" IF NOT EXISTS(
 
 CREATE TYPE order_status_enum_type AS ENUM ('Ordered', 'Dispatched', 'ReadyForCollection', 'Delivered', 'Collected');
 
-CREATE TABLE "supplier_orders" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "supplier_orders" (
   "id" integer PRIMARY KEY,
   "order_date" date,
   "supplier_id" integer,
@@ -54,7 +54,7 @@ CREATE TABLE "supplier_orders" IF NOT EXISTS(
   FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
 );
 
-CREATE TABLE "supplier_order_items" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "supplier_order_items" (
   "id" integer PRIMARY KEY,
   "quantity" integer,
   "supplier_order_id" integer,
@@ -74,7 +74,7 @@ CREATE TYPE payment_enum_type AS ENUM (
     'Bitcoin(BTC)', 'Ethereum(ETH)', 'Litecoin(LTC)'
 );
 
-CREATE TABLE "orders" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "orders" (
   "id" integer PRIMARY KEY,
   "order_date" date,
   "total_price" money, -- want to be calculated dynamically
@@ -84,7 +84,7 @@ CREATE TABLE "orders" IF NOT EXISTS(
   FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
 );
 
-CREATE TABLE "order_items" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "order_items" (
   "id" integer PRIMARY KEY,
   "quantity" integer,
   "price" money, -- -- want to be calculated dynamically
@@ -94,13 +94,13 @@ CREATE TABLE "order_items" IF NOT EXISTS(
   FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE CASCADE
 );
 
-CREATE TABLE "magical_properties" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "magical_properties" (
   "id" integer PRIMARY KEY,
   "name" varchar,
   "description" text
 );
 
-CREATE TABLE "beans_magical_propeties" IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS "beans_magical_propeties" (
   "id" integer PRIMARY KEY,
   "effect_duration" integer,
   "bean_id" integer,

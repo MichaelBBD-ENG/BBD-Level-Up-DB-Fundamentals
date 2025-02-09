@@ -46,12 +46,12 @@ function docker_status {
 
 # Show Flyway migration status
 function flyway_info {
-    flyway -configFiles=flyway.toml info
+    flyway -configFiles=flyway.conf info
 }
 
 # Perform Flyway migrations
 function flyway_migrate {
-    flyway -configFiles=flyway.toml migrate
+    flyway -configFiles=flyway.conf migrate
 }
 
 # Command-line parsing
