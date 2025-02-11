@@ -21,18 +21,6 @@ if "%1"=="-v" (
     goto end
 )
 
-:: Encrypt environment files
-if "%1"=="encrypt-env" (
-    call :encrypt_env
-    goto end
-)
-
-:: Decrypt environment files
-if "%1"=="decrypt-env" (
-    call :decrypt_env
-    goto end
-)
-
 :: Docker up
 if "%1"=="docker-up" (
     call :docker_up
@@ -72,8 +60,6 @@ echo   --help, -h        Show this help message
 echo   --version         Show version information
 echo.
 echo Commands:
-echo   encrypt-env       Encrypt all env (local and prod)
-echo   decrypt-env       Decrypt all env (local and prod)
 echo   docker-up         Start all docker containers used by this project
 echo   docker-status     Show the status of all docker containers
 echo   flyway-info       Display the Flyway migration status
@@ -82,18 +68,6 @@ goto :eof
 
 :show_version
 echo bbdlu Version 0.1.0
-goto :eof
-
-:encrypt_env
-:: Encrypt the environment files
-openssl enc -aes-256-cbc -salt -pbkdf2 -in secrets\local.env -out secrets\local.env.enc
-openssl enc -aes-256-cbc -salt -pbkdf2 -in secrets\prod.env -out secrets\prod.env.enc
-goto :eof
-
-:decrypt_env
-:: Decrypt the environment files
-openssl enc -aes-256-cbc -d -salt -pbkdf2 -in secrets\local.env.enc -out secrets\local.env
-openssl enc -aes-256-cbc -d -salt -pbkdf2 -in secrets\prod.env.enc -out secrets\prod.env
 goto :eof
 
 :docker_up

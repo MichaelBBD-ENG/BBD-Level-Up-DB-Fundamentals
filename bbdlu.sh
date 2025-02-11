@@ -9,24 +9,10 @@ function show_help {
     echo "  --version         Show version information"
     echo ""
     echo "Commands:"
-    echo "  encrypt-env       Encrypt all env (local and prod)"
-    echo "  decrypt-env       Decrypt all env (local and prod)"
     echo "  docker-up         Start all docker containers used by this project"
     echo "  docker-status     Show the status of all docker containers"
     echo "  flyway-info       Display the Flyway migration status"
     echo "  flyway-migrate    Perform Flyway migrations to the next version"
-}
-
-# Encrypt environment files
-function encrypt_env {
-    openssl enc -aes-256-cbc -salt -pbkdf2 -in secrets/local.env -out secrets/local.env.enc
-    openssl enc -aes-256-cbc -salt -pbkdf2 -in secrets/prod.env -out secrets/prod.env.enc
-}
-
-# Decrypt environment files
-function decrypt_env {
-    openssl enc -aes-256-cbc -d -salt -pbkdf2 -in secrets/local.env.enc -out secrets/local.env
-    openssl enc -aes-256-cbc -d -salt -pbkdf2 -in secrets/prod.env.enc -out secrets/prod.env
 }
 
 # Show version
@@ -59,10 +45,6 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     show_help
 elif [[ "$1" == "--version" || "$1" == "-v" ]]; then
     show_version
-elif [[ "$1" == "encrypt-env" ]]; then
-    encrypt_env
-elif [[ "$1" == "decrypt-env" ]]; then
-    decrypt_env
 elif [[ "$1" == "docker-up" ]]; then
     docker_up
 elif [[ "$1" == "docker-status" ]]; then
