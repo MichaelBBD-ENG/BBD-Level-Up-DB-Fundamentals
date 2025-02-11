@@ -1,2 +1,4 @@
 flyway.toml
 *.env
+*html
+*.json

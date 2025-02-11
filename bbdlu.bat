@@ -108,12 +108,12 @@ goto :eof
 
 :flyway_info
 :: Display the Flyway migration status
-flyway -configFiles=flyway.conf info
+flyway -configFiles=flyway.toml -url=jdbc:postgresql://localhost:5432/db -user=root -password=root info
 goto :eof
 
 :flyway_migrate
 :: Perform Flyway migrations
-flyway -configFiles=flyway.conf migrate
+flyway -configFiles=flyway.toml -url=jdbc:postgresql://localhost:5432/db -user=root -password=root migrate
 goto :eof
 
 :end

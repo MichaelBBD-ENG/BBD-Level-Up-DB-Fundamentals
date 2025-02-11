@@ -46,12 +46,12 @@ function docker_status {
 
 # Show Flyway migration status
 function flyway_info {
-    flyway -configFiles=flyway.conf info
+    flyway -configFiles=flyway.toml -url=jdbc:postgresql://localhost:5432/db -user=root -password=root info
 }
 
 # Perform Flyway migrations
 function flyway_migrate {
-    flyway -configFiles=flyway.conf migrate
+    flyway -configFiles=flyway.toml -url=jdbc:postgresql://localhost:5432/db -user=root -password=root migrate
 }
 
 # Command-line parsing
