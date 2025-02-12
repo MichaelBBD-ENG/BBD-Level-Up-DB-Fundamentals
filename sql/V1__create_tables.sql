@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS "contact_information" (
   "id" integer PRIMARY KEY,
   "phone" varchar,
@@ -112,3 +114,5 @@ CREATE TABLE IF NOT EXISTS "beans_magical_propeties" (
 COMMENT ON COLUMN "orders"."total_price" IS 'want to be calculated';
 
 COMMENT ON COLUMN "order_items"."price" IS 'want to be calculated';
+
+COMMIT:
