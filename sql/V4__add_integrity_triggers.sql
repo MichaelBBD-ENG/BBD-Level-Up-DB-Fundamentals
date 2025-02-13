@@ -9,13 +9,6 @@ BEGIN
     WHERE order_id = NEW.id
   )
   WHERE id = NEW.id;
-  
-  RETURN NEW;
-  EXCEPTION
-        WHEN OTHERS THEN
-            ROLLBACK;
-            RAISE;
-  END;
 END;
 $$ LANGUAGE plpgsql;
 
