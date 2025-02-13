@@ -1,36 +1,54 @@
 name: Deploy PostgreSQL to AWS RDS
 
 on:
-  workflow_dispatch:  # manual execution - GitHub UI
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Install PostgreSQL Client
-        run: sudo apt-get install -y postgresql-client
-
-      - name: Check if Database Exists
-        id: check_db
+      - name: Check if RDS instance exists
+        id: check-db
         run: |
-          DB_EXIST=$(PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
-            -h ${{ secrets.DB_HOST }} \
-            -p ${{ secrets.DB_PORT }} \
-            -U ${{ secrets.DB_USER }} \
-            -tAc "SELECT 1 FROM pg_database WHERE datname='${{ secrets.DB_NAME }}'")
-          
-          if [[ "$DB_EXIST" == "1" ]]; then
-            echo "Database already exists."
-            exit 0
+          if aws rds describe-db-instances --db-instance-identifier ${{ vars.DB_INSTANCE_IDENTIFIER }} > /dev/null 2>&1; then
+            echo "DB_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "Database does not exist. Creating it..."
-            PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
-              -h ${{ secrets.DB_HOST }} \
-              -p ${{ secrets.DB_PORT }} \
-              -U ${{ secrets.DB_USER }} \
-              -c "CREATE DATABASE ${{ secrets.DB_NAME }};"
+            echo "DB_EXISTS=false" >> $GITHUB_ENV
           fi
+
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+
+      # - name: Install PostgreSQL Client
+      #   run: sudo apt-get install -y postgresql-client
+
+      # - name: Check if Database Exists
+      #   id: check_db
+      #   run: |
+      #     DB_EXIST=$(PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
+      #       -h ${{ secrets.DB_HOST }} \
+      #       -p ${{ secrets.DB_PORT }} \
+      #       -U ${{ secrets.DB_USER }} \
+      #       -tAc "SELECT 1 FROM pg_database WHERE datname='${{ secrets.DB_NAME }}'")
+          
+      #     if [[ "$DB_EXIST" == "1" ]]; then
+      #       echo "Database already exists."
+      #       exit 0
+      #     else
+      #       echo "Database does not exist. Creating it..."
+      #       PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
+      #         -h ${{ secrets.DB_HOST }} \
+      #         -p ${{ secrets.DB_PORT }} \
+      #         -U ${{ secrets.DB_USER }} \
+      #         -c "CREATE DATABASE ${{ secrets.DB_NAME }};"
+      #     fi
