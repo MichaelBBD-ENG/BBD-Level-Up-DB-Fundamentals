@@ -1,0 +1,36 @@
+name: Deploy PostgreSQL to AWS RDS
+
+on:
+  workflow_dispatch:  # manual execution - GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL Client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Check if Database Exists
+        id: check_db
+        run: |
+          DB_EXIST=$(PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
+            -h ${{ secrets.DB_HOST }} \
+            -p ${{ secrets.DB_PORT }} \
+            -U ${{ secrets.DB_USER }} \
+            -tAc "SELECT 1 FROM pg_database WHERE datname='${{ secrets.DB_NAME }}'")
+          
+          if [[ "$DB_EXIST" == "1" ]]; then
+            echo "Database already exists."
+            exit 0
+          else
+            echo "Database does not exist. Creating it..."
+            PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
+              -h ${{ secrets.DB_HOST }} \
+              -p ${{ secrets.DB_PORT }} \
+              -U ${{ secrets.DB_USER }} \
+              -c "CREATE DATABASE ${{ secrets.DB_NAME }};"
+          fi
