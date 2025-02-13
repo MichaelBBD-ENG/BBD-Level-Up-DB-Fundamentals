@@ -1,36 +1,68 @@
-name: Deploy PostgreSQL to AWS RDS
+name: Deploy PostgreSQL to AWS RDS & Run Flyway Migration
 
 on:
-  workflow_dispatch:  # manual execution - GitHub UI
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Install PostgreSQL Client
-        run: sudo apt-get install -y postgresql-client
-
-      - name: Check if Database Exists
-        id: check_db
+      - name: Check if RDS instance exists
+        id: check-db
         run: |
-          DB_EXIST=$(PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
-            -h ${{ secrets.DB_HOST }} \
-            -p ${{ secrets.DB_PORT }} \
-            -U ${{ secrets.DB_USER }} \
-            -tAc "SELECT 1 FROM pg_database WHERE datname='${{ secrets.DB_NAME }}'")
-          
-          if [[ "$DB_EXIST" == "1" ]]; then
-            echo "Database already exists."
-            exit 0
+          if aws rds describe-db-instances --db-instance-identifier ${{ vars.DB_INSTANCE_IDENTIFIER }} > /dev/null 2>&1; then
+            echo "DB_EXISTS=true" >> $GITHUB_ENV
           else
-            echo "Database does not exist. Creating it..."
-            PGPASSWORD=${{ secrets.DB_PASSWORD }} psql \
-              -h ${{ secrets.DB_HOST }} \
-              -p ${{ secrets.DB_PORT }} \
-              -U ${{ secrets.DB_USER }} \
-              -c "CREATE DATABASE ${{ secrets.DB_NAME }};"
+            echo "DB_EXISTS=false" >> $GITHUB_ENV
           fi
+
+      - name: Create RDS Postgres Server instance if not exists
+        if: env.DB_EXISTS == 'false'
+        run: |
+          aws rds create-db-instance \
+            --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} \
+            --db-instance-class ${{ secrets.DB_INSTANCE_CLASS }} \
+            --engine ${{ secrets.DB_ENGINE }} \
+            --allocated-storage ${{ secrets.DB_STORAGE }} \
+            --master-username ${{ secrets.DB_USERNAME }} \
+            --master-user-password ${{ secrets.DB_PASSWORD }} \
+            --backup-retention-period 7 \
+            --no-multi-az
+
+      - name: Wait for RDS to be available
+        if: env.DB_EXISTS == 'false'
+        run: |
+          echo "Waiting for RDS instance to be available..."
+          aws rds wait db-instance-available --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }}
+
+      - name: Get RDS Endpoint
+        run: |
+          ENDPOINT=$(aws rds describe-db-instances --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text)
+          echo "RDS_ENDPOINT=$ENDPOINT" >> $GITHUB_ENV
+
+      - name: Create Database
+        run: 
+        # Need to configure for postgres
+
+      - name: Debug Connection String
+        run: 
+        # ensure we get echo conn string
+      
+      - name: Run Flyway migrations
+        run: |
+          docker run --rm \
+            -v $(pwd)/migrations:/flyway/sql \
+            flyway/flyway migrate \
+            -url="" \
+            -user=${{ secrets.DB_USERNAME }} \
+            -password=${{ secrets.DB_PASSWORD }} 
