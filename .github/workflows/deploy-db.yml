@@ -51,13 +51,13 @@ jobs:
           ENDPOINT=$(aws rds describe-db-instances --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text)
           echo "RDS_ENDPOINT=$ENDPOINT" >> $GITHUB_ENV
 
-      - name: Create Database
-        run: 
-        # Need to configure for postgres
+      # - name: Create Database
+      #   run: 
+      #   # Need to configure for postgres
 
-      - name: Debug Connection String
-        run: 
-        # ensure we get echo conn string
+      # - name: Debug Connection String
+      #   run: 
+      #   # ensure we get echo conn string
       
       - name: Run Flyway migrations
         run: |
