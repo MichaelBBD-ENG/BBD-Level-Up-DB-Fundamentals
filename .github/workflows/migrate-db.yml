@@ -1,0 +1,28 @@
+name: Run Flyway Migrations
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Flyway
+        run: |
+          curl -L "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/10.0.0/flyway-commandline-10.0.0-linux-x64.tar.gz" -o flyway.tar.gz
+          tar -xzf flyway.tar.gz
+          sudo mv flyway-10.0.0 /usr/local/flyway
+          sudo ln -s /usr/local/flyway/flyway /usr/local/bin/flyway
+
+      - name: Run Flyway Migrations
+        run: |
+          flyway -url=jdbc:postgresql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }} \
+                 -user=${{ secrets.DB_USER }} \
+                 -password=${{ secrets.DB_PASSWORD }} \
+                 migrate
