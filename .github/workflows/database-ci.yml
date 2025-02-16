@@ -89,6 +89,30 @@ jobs:
           ENDPOINT=$(aws rds describe-db-instances --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text)
           echo "RDS_ENDPOINT=$ENDPOINT" >> $GITHUB_ENV
 
+      - name: ℹ️ Show migration info
+        if: always()
+        run: |
+          docker run --rm \
+          -v $(pwd)/sql:/flyway/sql \
+          flyway/flyway info \
+          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
+          -user=${{ secrets.DB_USERNAME }} \
+          -password=${{ secrets.DB_PASSWORD }} \
+          -configFiles=flyway.toml \
+          -driver=org.postgresql.Driver
+  
+      - name: 🔄 Run Flyway migrations
+        id: migration
+        run: |
+          docker run --rm \
+          -v $(pwd)/sql:/flyway/sql \
+          flyway/flyway migrate \
+          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
+          -user=${{ secrets.DB_USERNAME }} \
+          -password=${{ secrets.DB_PASSWORD }} \
+          -configFiles=flyway.toml \
+          -driver=org.postgresql.Driver
+
       - name: ✅ Validate Flyway migrations
         id: validate
         continue-on-error: true
@@ -107,30 +131,6 @@ jobs:
         run: |
           echo "Migration validation failed! Please check your migration files."
           exit 1
-
-      - name: ℹ️ Show migration info
-        if: always()
-        run: |
-          docker run --rm \
-          -v $(pwd)/sql:/flyway/sql \
-          flyway/flyway info \
-          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
-          -user=${{ secrets.DB_USERNAME }} \
-          -password=${{ secrets.DB_PASSWORD }} \
-          -configFiles=flyway.toml \
-          -driver=org.postgresql.Driver
-
-      - name: 🔄 Run Flyway migrations
-        id: migration
-        run: |
-          docker run --rm \
-          -v $(pwd)/sql:/flyway/sql \
-          flyway/flyway migrate \
-          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
-          -user=${{ secrets.DB_USERNAME }} \
-          -password=${{ secrets.DB_PASSWORD }} \
-          -configFiles=flyway.toml \
-          -driver=org.postgresql.Driver
 
       - name: ℹ️ Show migration info
         if: always()
