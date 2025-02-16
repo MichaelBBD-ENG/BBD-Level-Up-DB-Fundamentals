@@ -28,6 +28,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+          aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
       
       - name: 🔍 Check if RDS instance exists
         id: check-rds
@@ -80,6 +81,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+          aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
       
       - name: 📍 Get RDS Endpoint
         id: get-endpoint
