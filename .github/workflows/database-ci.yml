@@ -93,38 +93,41 @@ jobs:
         if: always()
         run: |
           docker run --rm \
-          -v $(pwd)/sql:/flyway/sql \
+          -v $(pwd):/flyway/MagicBean \
           flyway/flyway info \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
           -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
-          -configFiles=flyway.toml \
-          -driver=org.postgresql.Driver
-  
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
+
       - name: 🔄 Run Flyway migrations
         id: migration
         run: |
           docker run --rm \
-          -v $(pwd)/sql:/flyway/sql \
+          -v $(pwd):/flyway/MagicBean \
           flyway/flyway migrate \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
           -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
-          -configFiles=flyway.toml \
-          -driver=org.postgresql.Driver
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
 
       - name: ✅ Validate Flyway migrations
         id: validate
         continue-on-error: true
         run: |
           docker run --rm \
-          -v $(pwd)/sql:/flyway/sql \
+          -v $(pwd):/flyway/MagicBean \
           flyway/flyway validate \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
           -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
-          -configFiles=flyway.toml \
-          -driver=org.postgresql.Driver
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
 
       - name: 🛑 Fail if validation failed
         if: steps.validate.outcome == 'failure'
@@ -136,10 +139,11 @@ jobs:
         if: always()
         run: |
           docker run --rm \
-          -v $(pwd)/sql:/flyway/sql \
+          -v $(pwd):/flyway/MagicBean \
           flyway/flyway info \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
           -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
-          -configFiles=flyway.toml \
-          -driver=org.postgresql.Driver
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
