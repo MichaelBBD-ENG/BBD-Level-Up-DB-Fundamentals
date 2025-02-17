@@ -1,3 +1,22 @@
+-- change schema
+DO $$ 
+DECLARE 
+    db_table RECORD;
+BEGIN
+    -- Create the new schema if it doesn't exist
+    CREATE SCHEMA IF NOT EXISTS magic_beans_schema;
+
+    FOR db_table IN 
+        SELECT tablename 
+        FROM pg_tables 
+        WHERE schemaname = 'public' 
+        AND tablename IN ('address', 'magical_properties', 'order_items', 'orders', 'supplier_order_items', 'supplier_orders', 'suppliers','user_roles', 'beans', 'users', 'contact_information')
+    LOOP
+        EXECUTE format('ALTER TABLE public.%I SET SCHEMA magic_beans_schema', db_table.tablename);
+    END LOOP;
+END $$;
+
+-- create roles
 BEGIN TRANSACTION;
 
 -- basically admin, sudo, root
@@ -30,5 +49,15 @@ CREATE ROLE app_user WITH LOGIN;
 GRANT USAGE ON SCHEMA magic_beans_schema TO app_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA magic_beans_schema GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA magic_beans_schema TO app_user;
 COMMENT ON ROLE app_user IS 'usage for backend/frontend stack'; 
+
+COMMIT;
+
+-- revoke access
+BEGIN TRANSACTION;
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA magic_beans_schema FROM PUBLIC;
+
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 
 COMMIT;
