@@ -4,12 +4,11 @@ RETURNS TRIGGER AS $$
 BEGIN
     UPDATE "Orders"
 
-    SET total_price = (
+    NEW.total_price := (
         SELECT COALESCE(SUM(price*quantity), 0)
         FROM OrderItem 
         WHERE order_id = NEW.id
     )
-    WHERE id=new.id;
 
     RETURN NEW;
 END;
@@ -23,8 +22,11 @@ FOR EACH ROW EXECUTE FUNCTION calculate_order_total();
 CREATE OR REPLACE FUNCTION calculate_item_price()
 RETURNS TRIGGER AS $$
 BEGIN
-    SELECT price into NEW.price FROM "Bean" WHERE id=NEW.bean_id;
-    IF NEW.price is NULL THEN
+    SELECT price INTO NEW.price 
+    FROM "Bean" 
+    WHERE id = NEW.bean_id;
+
+    IF NEW.price IS NULL THEN
         RAISE EXCEPTION 'Bean ID % does not have a price', NEW.bean_id;
     END IF;
 
@@ -33,7 +35,7 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER update_item_price
-AFTER INSERT ON "OrderItem"
+BEFORE INSERT OR UPDATE ON "OrderItem"
 FOR EACH ROW EXECUTE FUNCTION calculate_item_price();
 
 -- Prevent negative stock values
@@ -59,10 +61,15 @@ DECLARE
     delivered_status_id BIGINT := (SELECT id FROM "OrderStatus" WHERE status = 'Delivered');
     supplier_order_type_id BIGINT := (SELECT id FROM "OrderType" WHERE type = 'Supplier');
 BEGIN
-    -- Update inventory for supplier orders 
-    IF NEW.order_status_id = delivered_status_id
-        AND NEW.order_type_id = supplier_order_type_id THEN
-        -- Add stock for each bean in the order 
+    -- Update inventory only if status changed to "Delivered" for supplier orders
+    IF NEW.order_status_id = delivered_status_id 
+       AND NEW.order_type_id = supplier_order_type_id
+       AND NOT EXISTS (
+            SELECT 1 FROM "Inventory" i 
+            JOIN "OrderItem" oi ON oi.bean_id = i.bean_id
+            WHERE oi.order_id = NEW.id
+       ) 
+    THEN
         UPDATE "Inventory" i
         SET quantity = i.quantity + oi.quantity
         FROM "OrderItem" oi
@@ -98,3 +105,27 @@ $$ LANGUAGE PLPGSQL;
 CREATE TRIGGER track_order_status
 AFTER UPDATE ON "Orders"
 FOR EACH ROW EXECUTE FUNCTION log_order_status_change();
+
+-- Handle stock updates for csutomer orders
+CREATE OR REPLACE FUNCTION deduct_stock_on_customer_order()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Ensure sufficient stock before deducting
+    IF (SELECT quantity FROM "Inventory" WHERE bean_id = NEW.bean_id) < NEW.quantity THEN
+        RAISE EXCEPTION 'Not enough stock for Bean ID %', NEW.bean_id;
+    END IF;
+
+    -- Deduct stock from inventory
+    UPDATE "Inventory"
+    SET quantity = quantity - NEW.quantity
+    WHERE bean_id = NEW.bean_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER update_stock_on_customer_order
+AFTER INSERT ON "OrderItem"
+FOR EACH ROW
+EXECUTE FUNCTION deduct_stock_on_customer_order();
+
