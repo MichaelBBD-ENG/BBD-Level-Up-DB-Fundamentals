@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Drop the many-to-many relationship table
 DROP TABLE IF EXISTS "beans_magical_propeties";
 
@@ -33,3 +35,4 @@ ALTER TABLE "contact_information"
 ADD CONSTRAINT fk_address
 FOREIGN KEY ("address_id") REFERENCES "address"("id") ON DELETE CASCADE;
 
+COMMIT;

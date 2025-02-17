@@ -1,0 +1,149 @@
+name: Database Infrastructure 🐳 & Migration CI ✈️🧪
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "sql/**"
+      - ".github/workflows/database-ci.yml"
+      - "flyway.toml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 🐳 Deploy RDS Instance 
+    runs-on: ubuntu-latest
+    
+    concurrency:
+      group: ${{ github.workflow }}-deploy-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🔑 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
+      
+      - name: 🔍 Check if RDS instance exists
+        id: check-rds
+        run: |
+          if aws rds describe-db-instances --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} > /dev/null 2>&1; then
+            echo "DB_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "DB_EXISTS=false" >> $GITHUB_ENV
+          fi
+      
+      - name: 🚀 Create RDS Postgres Server instance
+        if: env.DB_EXISTS == 'false'
+        run: |
+          aws rds create-db-instance \
+              --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} \
+              --db-instance-class ${{ secrets.DB_INSTANCE_CLASS }} \
+              --engine ${{ secrets.DB_ENGINE }} \
+              --db-name ${{ secrets.DB_NAME }} \
+              --allocated-storage ${{ secrets.DB_STORAGE }} \
+              --master-username ${{ secrets.DB_USERNAME }} \
+              --master-user-password ${{ secrets.DB_PASSWORD }} \
+              --backup-retention-period 7 \
+              --no-multi-az \
+              --publicly-accessible \
+              --vpc-security-group-ids ${{ secrets.DB_SECURITY_GROUP_ID }} \
+              --db-subnet-group-name ${{ secrets.DB_SUBNET_GROUP }} 
+
+      - name: ⏳ Wait for RDS to be available
+        if: env.DB_EXISTS == 'false'
+        run: |
+          echo "Waiting for RDS instance to be available..."
+          aws rds wait db-instance-available --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }}
+
+  migrate:
+    name: ✈️🧪 Run Database Migrations
+    needs: deploy
+    runs-on: ubuntu-latest
+    
+    concurrency:
+      group: ${{ github.workflow }}-migrate-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔑 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
+      
+      - name: 📍 Get RDS Endpoint
+        id: get-endpoint
+        run: |
+          ENDPOINT=$(aws rds describe-db-instances --db-instance-identifier ${{ secrets.DB_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text)
+          echo "RDS_ENDPOINT=$ENDPOINT" >> $GITHUB_ENV
+
+      - name: ℹ️ Show migration info
+        if: always()
+        run: |
+          docker run --rm \
+          -v $(pwd):/flyway/MagicBean \
+          flyway/flyway info \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
+          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
+          -user=${{ secrets.DB_USERNAME }} \
+          -password=${{ secrets.DB_PASSWORD }} \
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
+
+      - name: 🔄 Run Flyway migrations
+        id: migration
+        run: |
+          docker run --rm \
+          -v $(pwd):/flyway/MagicBean \
+          flyway/flyway migrate \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
+          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
+          -user=${{ secrets.DB_USERNAME }} \
+          -password=${{ secrets.DB_PASSWORD }} \
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
+
+      - name: ✅ Validate Flyway migrations
+        id: validate
+        continue-on-error: true
+        run: |
+          docker run --rm \
+          -v $(pwd):/flyway/MagicBean \
+          flyway/flyway validate \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
+          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
+          -user=${{ secrets.DB_USERNAME }} \
+          -password=${{ secrets.DB_PASSWORD }} \
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"
+
+      - name: 🛑 Fail if validation failed
+        if: steps.validate.outcome == 'failure'
+        run: |
+          echo "Migration validation failed! Please check your migration files."
+          exit 1
+
+      - name: ℹ️ Show migration info
+        if: always()
+        run: |
+          docker run --rm \
+          -v $(pwd):/flyway/MagicBean \
+          flyway/flyway info \
+          -configFiles="/flyway/MagicBean/flyway.toml" \
+          -url="jdbc:postgresql://${{ env.RDS_ENDPOINT }}:5432/${{ secrets.DB_NAME }}" \
+          -user=${{ secrets.DB_USERNAME }} \
+          -password=${{ secrets.DB_PASSWORD }} \
+          -driver=org.postgresql.Driver \
+          -workingDirectory="MagicBean"

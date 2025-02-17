@@ -1,114 +1,142 @@
-CREATE TABLE IF NOT EXISTS "contact_information" (
-  "id" integer PRIMARY KEY,
-  "phone" varchar,
-  "email" varchar,
-  "address" varchar
+CREATE TABLE "OrderType" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "type" VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "users" (
-  "id" integer PRIMARY KEY,
-  "first_name" varchar,
-  "last_name" varchar,
-  "username" varchar,
-  "hash" varchar,-- better to not reference this as a password
-  "contact_id" integer, -- can a user have a null contact id ???
-  FOREIGN KEY ("contact_id") REFERENCES "contact_information"("id") ON DELETE CASCADE
+CREATE TABLE "Supplier" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "name" VARCHAR(255) UNIQUE NOT NULL,
+  "contact_id" BIGINT NOT NULL
 );
 
-CREATE TYPE bean_rarity_enum_type AS ENUM ('Common', 'Rare', 'Epic', 'Legendary', 'Otherworldly');
-
-CREATE TABLE IF NOT EXISTS "beans" (
-  "id" integer PRIMARY KEY,
-  "name" varchar,
-  "description" text,
-  "price" money,
-  "stock" integer,
-  "rarity" bean_rarity_enum_type NOT NULL
+CREATE TABLE "Orders" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "user_id" BIGINT NOT NULL,
+  "order_date" DATE DEFAULT CURRENT_DATE CHECK ("order_date" <= CURRENT_DATE),
+  "total_price" NUMERIC(10,2) NOT NULL CHECK ("total_price" >= 0),
+  "payment_method_id" BIGINT NOT NULL,
+  "order_status_id" BIGINT NOT NULL,
+  "order_type_id" BIGINT NOT NULL,
+  "supplier_id" BIGINT
 );
 
-CREATE TYPE user_roles_enum_type AS ENUM ('Customer', 'Employee');
-
-CREATE TABLE IF NOT EXISTS "user_roles" (
-  "id" integer PRIMARY KEY,
-  "role" user_roles_enum_type NOT NULL,
-  "user_id" integer,
-  FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
+CREATE TABLE "OrderItem" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "order_id" BIGINT NOT NULL,
+  "bean_id" BIGINT NOT NULL,
+  "quantity" INTEGER NOT NULL CHECK ("quantity" > 0),
+  "price" NUMERIC(10,2) NOT NULL CHECK ("price" >= 0)
 );
 
-CREATE TABLE IF NOT EXISTS "suppliers" (
-  "id" integer PRIMARY KEY,
-  "name" varchar,
-  "contact_id" integer,
-  FOREIGN KEY ("contact_id") REFERENCES "contact_information"("id") ON DELETE CASCADE
+CREATE TABLE "OrderHistory" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "order_id" BIGINT NOT NULL,
+  "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "order_status_id" BIGINT NOT NULL
 );
 
-CREATE TYPE order_status_enum_type AS ENUM ('Ordered', 'Dispatched', 'ReadyForCollection', 'Delivered', 'Collected');
-
-CREATE TABLE IF NOT EXISTS "supplier_orders" (
-  "id" integer PRIMARY KEY,
-  "order_date" date,
-  "supplier_id" integer,
-  "order_status" order_status_enum_type NOT NULL,
-  "user_id" integer,
-  FOREIGN KEY ("supplier_id") REFERENCES "suppliers"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
+CREATE TABLE "PaymentMethod" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "method" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "supplier_order_items" (
-  "id" integer PRIMARY KEY,
-  "quantity" integer,
-  "supplier_order_id" integer,
-  "bean_id" integer,
-  FOREIGN KEY ("supplier_order_id") REFERENCES "supplier_orders"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("bean_id") REFERENCES "beans"("id") ON DELETE CASCADE
+CREATE TABLE "OrderStatus" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "status" VARCHAR(100) NOT NULL
 );
 
-CREATE TYPE payment_enum_type AS ENUM (
-    -- credit cards and debit cards
-    'Visa', 'MasterCard', 'AmericanExpress', 'Discover',
-    -- digital
-    'ApplePay', 'GooglePay', 'SamsungPay', 'PayPal', 'Venmo',
-    -- buy now pay later
-    'Klarna', 'Afterpay', 'Affirm', 'Zip',
-    -- crypto
-    'Bitcoin(BTC)', 'Ethereum(ETH)', 'Litecoin(LTC)'
+CREATE TABLE "Bean" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "name" VARCHAR(255) UNIQUE NOT NULL,
+  "description" TEXT,
+  "price" NUMERIC(10,2) NOT NULL CHECK ("price" >= 0),
+  "magical_property" BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "orders" (
-  "id" integer PRIMARY KEY,
-  "order_date" date,
-  "total_price" money, -- want to be calculated dynamically
-  "user_id" integer,
-  "order_status" order_status_enum_type NOT NULL,
-  "payment_method" payment_enum_type NOT NULL,
-  FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
+CREATE TABLE "Inventory" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "bean_id" BIGINT NOT NULL,
+  "quantity" INTEGER NOT NULL CHECK ("quantity" >= 0)
 );
 
-CREATE TABLE IF NOT EXISTS "order_items" (
-  "id" integer PRIMARY KEY,
-  "quantity" integer,
-  "price" money, -- -- want to be calculated dynamically
-  "bean_id" integer,
-  "order_id" integer,
-  FOREIGN KEY ("bean_id") REFERENCES "beans"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE CASCADE
+CREATE TABLE "MagicalProperty" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "name" VARCHAR(255) UNIQUE NOT NULL,
+  "description" TEXT
 );
 
-CREATE TABLE IF NOT EXISTS "magical_properties" (
-  "id" integer PRIMARY KEY,
-  "name" varchar,
-  "description" text
+CREATE TABLE "Users" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "first_name" VARCHAR(100) NOT NULL,
+  "last_name" VARCHAR(100) NOT NULL,
+  "username" VARCHAR(100) UNIQUE NOT NULL,
+  "hashed_password" VARCHAR(255) NOT NULL,
+  "contact_id" BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "beans_magical_propeties" (
-  "id" integer PRIMARY KEY,
-  "effect_duration" integer,
-  "bean_id" integer,
-  "magical_properties_id" integer,
-  FOREIGN KEY ("bean_id") REFERENCES "beans"("id") ON DELETE CASCADE,
-  FOREIGN KEY ("magical_properties_id") REFERENCES "magical_properties"("id") ON DELETE CASCADE
+CREATE TABLE "UserRole" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "user_id" BIGINT NOT NULL,
+  "role_id" BIGINT NOT NULL
 );
 
-COMMENT ON COLUMN "orders"."total_price" IS 'want to be calculated';
+CREATE TABLE "Roles" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "role" VARCHAR(100) NOT NULL
+);
 
-COMMENT ON COLUMN "order_items"."price" IS 'want to be calculated';
+CREATE TABLE "ContactInformation" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "phone" VARCHAR(20) UNIQUE,
+  "email" VARCHAR(255) UNIQUE,
+  "address" TEXT
+);
+
+CREATE TABLE "Payment" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "order_id" BIGINT NOT NULL,
+  "payment_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "amount" NUMERIC(10,2) NOT NULL CHECK ("amount" >= 0),
+  "status_id" BIGINT NOT NULL
+);
+
+CREATE TABLE "PaymentStatus" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "status" VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE "Delivery" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "order_id" BIGINT NOT NULL,
+  "driver_id" BIGINT NOT NULL,
+  "delivery_notes" TEXT
+);
+
+ALTER TABLE "Supplier" ADD FOREIGN KEY ("contact_id") REFERENCES "ContactInformation" ("id");
+
+ALTER TABLE "Orders" ADD FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE;
+ALTER TABLE "Orders" ADD FOREIGN KEY ("payment_method_id") REFERENCES "PaymentMethod" ("id");
+ALTER TABLE "Orders" ADD FOREIGN KEY ("order_status_id") REFERENCES "OrderStatus" ("id");
+ALTER TABLE "Orders" ADD FOREIGN KEY ("supplier_id") REFERENCES "Supplier" ("id");
+ALTER TABLE "Orders" ADD FOREIGN KEY ("order_type_id") REFERENCES "OrderType" ("id");
+
+ALTER TABLE "OrderItem" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
+ALTER TABLE "OrderItem" ADD FOREIGN KEY ("bean_id") REFERENCES "Bean" ("id");
+
+ALTER TABLE "OrderHistory" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
+ALTER TABLE "OrderHistory" ADD FOREIGN KEY ("order_status_id") REFERENCES "OrderStatus" ("id");
+
+ALTER TABLE "Bean" ADD FOREIGN KEY ("magical_property") REFERENCES "MagicalProperty" ("id");
+
+ALTER TABLE "Inventory" ADD FOREIGN KEY ("bean_id") REFERENCES "Bean" ("id");
+
+ALTER TABLE "Users" ADD FOREIGN KEY ("contact_id") REFERENCES "ContactInformation" ("id");
+
+ALTER TABLE "UserRole" ADD FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE;
+ALTER TABLE "UserRole" ADD FOREIGN KEY ("role_id") REFERENCES "Roles" ("id");
+
+ALTER TABLE "Payment" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
+ALTER TABLE "Payment" ADD FOREIGN KEY ("status_id") REFERENCES "PaymentStatus" ("id");
+
+ALTER TABLE "Delivery" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
+ALTER TABLE "Delivery" ADD FOREIGN KEY ("driver_id") REFERENCES "Users" ("id");
