@@ -1,7 +1,7 @@
 [flyway]
 locations = ["filesystem:sql"]      # Locations of SQL Scripts
 baselineOnMigrate = true            # Set to true if the database already exists
-baselineVersion = "1"               # The version to start tracking from
+baselineVersion = "0"               # The version to start tracking from
 validateOnMigrate = true            # Ensure migration scripts haven't been modified
 cleanDisabled = true                # Prevent accidental database wipe
 outOfOrder = false                  # Prevent applying migrations out of sequence

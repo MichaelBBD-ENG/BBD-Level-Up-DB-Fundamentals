@@ -1,15 +1,15 @@
-CREATE TABLE "OrderType" (
+CREATE TABLE magic_beans_schema."order_type" (
   "id" BIGSERIAL PRIMARY KEY,
   "type" VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE "Supplier" (
+CREATE TABLE magic_beans_schema."supplier" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" VARCHAR(255) UNIQUE NOT NULL,
   "contact_id" BIGINT NOT NULL
 );
 
-CREATE TABLE "Orders" (
+CREATE TABLE magic_beans_schema."orders" (
   "id" BIGSERIAL PRIMARY KEY,
   "user_id" BIGINT NOT NULL,
   "order_date" DATE DEFAULT CURRENT_DATE CHECK ("order_date" <= CURRENT_DATE),
@@ -20,7 +20,7 @@ CREATE TABLE "Orders" (
   "supplier_id" BIGINT
 );
 
-CREATE TABLE "OrderItem" (
+CREATE TABLE magic_beans_schema."order_item" (
   "id" BIGSERIAL PRIMARY KEY,
   "order_id" BIGINT NOT NULL,
   "bean_id" BIGINT NOT NULL,
@@ -28,24 +28,24 @@ CREATE TABLE "OrderItem" (
   "price" NUMERIC(10,2) NOT NULL CHECK ("price" >= 0)
 );
 
-CREATE TABLE "OrderHistory" (
+CREATE TABLE magic_beans_schema."order_history" (
   "id" BIGSERIAL PRIMARY KEY,
   "order_id" BIGINT NOT NULL,
   "date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "order_status_id" BIGINT NOT NULL
 );
 
-CREATE TABLE "PaymentMethod" (
+CREATE TABLE magic_beans_schema."payment_method" (
   "id" BIGSERIAL PRIMARY KEY,
   "method" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE "OrderStatus" (
+CREATE TABLE magic_beans_schema."order_status" (
   "id" BIGSERIAL PRIMARY KEY,
   "status" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE "Bean" (
+CREATE TABLE magic_beans_schema."bean" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" VARCHAR(255) UNIQUE NOT NULL,
   "description" TEXT,
@@ -53,19 +53,19 @@ CREATE TABLE "Bean" (
   "magical_property" BIGINT NOT NULL
 );
 
-CREATE TABLE "Inventory" (
+CREATE TABLE magic_beans_schema."inventory" (
   "id" BIGSERIAL PRIMARY KEY,
   "bean_id" BIGINT NOT NULL,
   "quantity" INTEGER NOT NULL CHECK ("quantity" >= 0)
 );
 
-CREATE TABLE "MagicalProperty" (
+CREATE TABLE magic_beans_schema."magical_property" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" VARCHAR(255) UNIQUE NOT NULL,
   "description" TEXT
 );
 
-CREATE TABLE "Users" (
+CREATE TABLE magic_beans_schema."users" (
   "id" BIGSERIAL PRIMARY KEY,
   "first_name" VARCHAR(100) NOT NULL,
   "last_name" VARCHAR(100) NOT NULL,
@@ -74,25 +74,25 @@ CREATE TABLE "Users" (
   "contact_id" BIGINT NOT NULL
 );
 
-CREATE TABLE "UserRole" (
+CREATE TABLE magic_beans_schema."user_role" (
   "id" BIGSERIAL PRIMARY KEY,
   "user_id" BIGINT NOT NULL,
   "role_id" BIGINT NOT NULL
 );
 
-CREATE TABLE "Roles" (
+CREATE TABLE magic_beans_schema."roles" (
   "id" BIGSERIAL PRIMARY KEY,
   "role" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE "ContactInformation" (
+CREATE TABLE magic_beans_schema."contact_information" (
   "id" BIGSERIAL PRIMARY KEY,
   "phone" VARCHAR(20) UNIQUE,
   "email" VARCHAR(255) UNIQUE,
   "address" TEXT
 );
 
-CREATE TABLE "Payment" (
+CREATE TABLE magic_beans_schema."payment" (
   "id" BIGSERIAL PRIMARY KEY,
   "order_id" BIGINT NOT NULL,
   "payment_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -100,12 +100,12 @@ CREATE TABLE "Payment" (
   "status_id" BIGINT NOT NULL
 );
 
-CREATE TABLE "PaymentStatus" (
+CREATE TABLE magic_beans_schema."payment_status" (
   "id" BIGSERIAL PRIMARY KEY,
   "status" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE "Delivery" (
+CREATE TABLE magic_beans_schema."delivery" (
   "id" BIGSERIAL PRIMARY KEY,
   "order_id" BIGINT NOT NULL,
   "driver_id" BIGINT NOT NULL,
