@@ -112,31 +112,22 @@ CREATE TABLE "Delivery" (
   "delivery_notes" TEXT
 );
 
-ALTER TABLE "Supplier" ADD FOREIGN KEY ("contact_id") REFERENCES "ContactInformation" ("id");
-
-ALTER TABLE "Orders" ADD FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE;
-ALTER TABLE "Orders" ADD FOREIGN KEY ("payment_method_id") REFERENCES "PaymentMethod" ("id");
-ALTER TABLE "Orders" ADD FOREIGN KEY ("order_status_id") REFERENCES "OrderStatus" ("id");
-ALTER TABLE "Orders" ADD FOREIGN KEY ("supplier_id") REFERENCES "Supplier" ("id");
-ALTER TABLE "Orders" ADD FOREIGN KEY ("order_type_id") REFERENCES "OrderType" ("id");
-
-ALTER TABLE "OrderItem" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
-ALTER TABLE "OrderItem" ADD FOREIGN KEY ("bean_id") REFERENCES "Bean" ("id");
-
-ALTER TABLE "OrderHistory" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
-ALTER TABLE "OrderHistory" ADD FOREIGN KEY ("order_status_id") REFERENCES "OrderStatus" ("id");
-
-ALTER TABLE "Bean" ADD FOREIGN KEY ("magical_property") REFERENCES "MagicalProperty" ("id");
-
-ALTER TABLE "Inventory" ADD FOREIGN KEY ("bean_id") REFERENCES "Bean" ("id");
-
-ALTER TABLE "Users" ADD FOREIGN KEY ("contact_id") REFERENCES "ContactInformation" ("id");
-
-ALTER TABLE "UserRole" ADD FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE;
-ALTER TABLE "UserRole" ADD FOREIGN KEY ("role_id") REFERENCES "Roles" ("id");
-
-ALTER TABLE "Payment" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
-ALTER TABLE "Payment" ADD FOREIGN KEY ("status_id") REFERENCES "PaymentStatus" ("id");
-
-ALTER TABLE "Delivery" ADD FOREIGN KEY ("order_id") REFERENCES "Orders" ("id") ON DELETE CASCADE;
-ALTER TABLE "Delivery" ADD FOREIGN KEY ("driver_id") REFERENCES "Users" ("id");
+ALTER TABLE magic_beans_schema."supplier" ADD FOREIGN KEY ("contact_id") REFERENCES magic_beans_schema."contact_information" ("id");
+ALTER TABLE magic_beans_schema."orders" ADD FOREIGN KEY ("user_id") REFERENCES magic_beans_schema."users" ("id") ON DELETE CASCADE;
+ALTER TABLE magic_beans_schema."orders" ADD FOREIGN KEY ("payment_method_id") REFERENCES magic_beans_schema."payment_method" ("id");
+ALTER TABLE magic_beans_schema."orders" ADD FOREIGN KEY ("order_status_id") REFERENCES magic_beans_schema."order_status" ("id");
+ALTER TABLE magic_beans_schema."orders" ADD FOREIGN KEY ("supplier_id") REFERENCES magic_beans_schema."supplier" ("id");
+ALTER TABLE magic_beans_schema."orders" ADD FOREIGN KEY ("order_type_id") REFERENCES magic_beans_schema."order_type" ("id");
+ALTER TABLE magic_beans_schema."order_item" ADD FOREIGN KEY ("order_id") REFERENCES magic_beans_schema."orders" ("id") ON DELETE CASCADE;
+ALTER TABLE magic_beans_schema."order_item" ADD FOREIGN KEY ("bean_id") REFERENCES magic_beans_schema."bean" ("id");
+ALTER TABLE magic_beans_schema."order_history" ADD FOREIGN KEY ("order_id") REFERENCES magic_beans_schema."orders" ("id") ON DELETE CASCADE;
+ALTER TABLE magic_beans_schema."order_history" ADD FOREIGN KEY ("order_status_id") REFERENCES magic_beans_schema."order_status" ("id");
+ALTER TABLE magic_beans_schema."bean" ADD FOREIGN KEY ("magical_property") REFERENCES magic_beans_schema."magical_property" ("id");
+ALTER TABLE magic_beans_schema."inventory" ADD FOREIGN KEY ("bean_id") REFERENCES magic_beans_schema."bean" ("id");
+ALTER TABLE magic_beans_schema."users" ADD FOREIGN KEY ("contact_id") REFERENCES magic_beans_schema."contact_information" ("id");
+ALTER TABLE magic_beans_schema."user_role" ADD FOREIGN KEY ("user_id") REFERENCES magic_beans_schema."users" ("id") ON DELETE CASCADE;
+ALTER TABLE magic_beans_schema."user_role" ADD FOREIGN KEY ("role_id") REFERENCES magic_beans_schema."roles" ("id");
+ALTER TABLE magic_beans_schema."payment" ADD FOREIGN KEY ("order_id") REFERENCES magic_beans_schema."orders" ("id") ON DELETE CASCADE;
+ALTER TABLE magic_beans_schema."payment" ADD FOREIGN KEY ("status_id") REFERENCES magic_beans_schema."payment_status" ("id");
+ALTER TABLE magic_beans_schema."delivery" ADD FOREIGN KEY ("order_id") REFERENCES magic_beans_schema."orders" ("id") ON DELETE CASCADE;
+ALTER TABLE magic_beans_schema."delivery" ADD FOREIGN KEY ("driver_id") REFERENCES magic_beans_schema."users" ("id");
