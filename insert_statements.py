@@ -7,9 +7,18 @@ columns = {
         "last_name": "STRING",
         "username": "STRING",
         "hashed_password": "STRING",
-        "external_id": "NUMBER"
-    }
+        "phone": "STRING",
+        "email": "STRING",
+        "address": "STRING"
+    },
+    # Add more tables here please ty
 }
+
+functions = {
+    "users": "insert_user"
+}
+
+### YOU DON'T NEED TO MODIFY ANYTHING BELOW THIS!!! ###
 
 def escape_sql_value(value, value_type):
     if value_type == 'STRING':
@@ -20,12 +29,13 @@ def escape_sql_value(value, value_type):
         return str(value)
     return str(value)
 
-def generate_select_statements(csv_file, output_sql_file, table_name, function_name):
+def generate_select_statements(csv_file, output_sql_file, table_name):
     
     if table_name not in columns:
         raise ValueError(f"Table '{table_name}' not found in predefined column types.")
     
     table_columns = columns[table_name]
+    function_name = functions[table_name]
     
     with open(csv_file, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
@@ -35,7 +45,6 @@ def generate_select_statements(csv_file, output_sql_file, table_name, function_n
             raise ValueError(f"CSV headers do not match expected columns for {table_name}: {list(table_columns.keys())}")
         
         with open(output_sql_file, mode='w', encoding='utf-8') as sql_out:
-            sql_out.write(f"-- SELECT statements to call {function_name} for table {table_name}\n")
             
             for row in reader:
                 values = [
@@ -54,11 +63,10 @@ def main():
     parser.add_argument('table', help="The table to generate SELECT statements for")
     parser.add_argument('csv_file', help="Path to the input CSV file")
     parser.add_argument('output_sql_file', help="Path to output SQL file")
-    parser.add_argument('function_name', help="Name of the function to call in the SELECT statement")
     
     args = parser.parse_args()
 
-    generate_select_statements(args.csv_file, args.output_sql_file, args.table, args.function_name)
+    generate_select_statements(args.csv_file, args.output_sql_file, args.table)
 
 if __name__ == '__main__':
     main()

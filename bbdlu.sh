@@ -5,14 +5,16 @@ function show_help {
     echo "Usage: $0 [OPTIONS] COMMAND"
     echo ""
     echo "Options:"
-    echo "  --help, -h        Show this help message"
-    echo "  --version         Show version information"
+    echo "  --help, -h                                      Show this help message"
+    echo "  --version                                       Show version information"
     echo ""
     echo "Commands:"
-    echo "  docker-up         Start all docker containers used by this project"
-    echo "  docker-status     Show the status of all docker containers"
-    echo "  flyway-info       Display the Flyway migration status"
-    echo "  flyway-migrate    Perform Flyway migrations to the next version"
+    echo "  docker-up                                       Start all docker containers used by this project"
+    echo "  docker-status                                   Show the status of all docker containers"
+    echo "  flyway-info                                     Display the Flyway migration status"
+    echo "  flyway-migrate                                  Perform Flyway migrations to the next version"
+    echo "  gen-insert table csv_file output_sql_file       Generate insert statments whilst taking in the table, csv file into an sql file"
+    echo "         eg: ./bbdlu.sh gen-insert users csv/insert.csv sql/V2__insert_users_and_contact_info.sql"
 }
 
 # Show version
@@ -53,7 +55,10 @@ elif [[ "$1" == "flyway-info" ]]; then
     flyway_info
 elif [[ "$1" == "flyway-migrate" ]]; then
     flyway_migrate
+elif [[ "$1" == "gen-insert" ]]; then
+    python insert_statements.py "$2" "$3" "$4" 
 else
     echo "Invalid option or command. Use --help for usage information."
     exit 1
 fi
+
