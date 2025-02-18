@@ -14,7 +14,7 @@ function show_help {
     echo "  flyway-info                                     Display the Flyway migration status"
     echo "  flyway-migrate                                  Perform Flyway migrations to the next version"
     echo "  gen-insert table csv_file output_sql_file       Generate insert statments whilst taking in the table, csv file into an sql file"
-    echo "         eg: ./bbdlu.sh gen-insert users csv/insert.csv sql/V2__insert_users_and_contact_info.sql"
+    echo "         eg: ./bbdlu.sh gen-insert users csv/insert.csv sql/VXX__insert_users_and_contact_info.sql"
 }
 
 # Show version

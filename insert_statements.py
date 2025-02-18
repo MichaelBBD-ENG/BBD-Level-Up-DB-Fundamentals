@@ -3,19 +3,20 @@ import argparse
 
 columns = {
     "users": {
-        "first_name": "STRING",
-        "last_name": "STRING",
-        "username": "STRING",
-        "hashed_password": "STRING",
-        "phone": "STRING",
-        "email": "STRING",
-        "address": "STRING"
+        "p_first_name": "STRING",
+        "p_last_name": "STRING",
+        "p_username": "STRING",
+        "p_hashed_password": "STRING",
+        "p_phone": "STRING",
+        "p_email": "STRING",
+        "p_address": "STRING",
+        "p_role": "STRING"
     },
     # Add more tables here please ty
 }
 
 functions = {
-    "users": "insert_user"
+    "users": "magic_beans_schema.add_user"
 }
 
 ### YOU DON'T NEED TO MODIFY ANYTHING BELOW THIS!!! ###
@@ -52,7 +53,7 @@ def generate_select_statements(csv_file, output_sql_file, table_name):
                     for value, header in zip(row, headers)
                 ]
                 
-                sql_statement = f"SELECT {function_name}({', '.join(values)});\n"
+                sql_statement = f"CALL {function_name}({', '.join(values)});\n"
                 sql_out.write(sql_statement)
             
     print(f"SQL file '{output_sql_file}' has been created successfully with SELECT statements for '{function_name}'.")
