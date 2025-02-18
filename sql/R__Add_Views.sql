@@ -7,6 +7,7 @@ DROP VIEW IF EXISTS "Top_5_Selling_Beans";
 DROP VIEW IF EXISTS "Supplier_Orders";
 DROP VIEW IF EXISTS "Monthly_Sales";
 DROP VIEW IF EXISTS "Customer_Orders";
+DROP VIEW IF EXISTS "Delivery_History";
 
 -- View for Top 5 Selling Beans
 CREATE VIEW "Top_5_Selling_Beans" AS
@@ -61,5 +62,23 @@ JOIN "payment_method" pm ON o.payment_method_id = pm.id
 JOIN "order_status" os ON o.order_status_id = os.id
 JOIN "order_type" ot ON o.order_type_id = ot.id
 WHERE ot.type = 'Customer';
+
+-- View for Delivery History
+CREATE VIEW "Delivery_History" AS
+SELECT 
+    d.id AS delivery_id,
+    o.id AS order_id,
+    u.username AS customer,
+    driver.username AS driver,
+    d.delivery_notes,
+    oh.date AS order_status_date,
+    os.status AS order_status
+FROM "delivery" d
+JOIN "orders" o ON d.order_id = o.id
+JOIN "users" u ON o.user_id = u.id
+JOIN "users" driver ON d.driver_id = driver.id
+JOIN "order_history" oh ON oh.order_id = o.id
+JOIN "order_status" os ON oh.order_status_id = os.id
+ORDER BY oh.date DESC;
 
 COMMIT;
