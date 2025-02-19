@@ -33,7 +33,7 @@ BEGIN
         RAISE EXCEPTION 'Bean with id % not found', NEW.bean_id;
     END IF;
 
-    NEW.price := NEW.price * NEW.quantity;
+    NEW.price := bean_price * NEW.quantity;
     
     RETURN NEW;
 END;
@@ -58,3 +58,22 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE TRIGGER track_order_status
 AFTER UPDATE ON magic_beans_schema."orders"
 FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.log_order_status_change();
+
+CREATE OR REPLACE FUNCTION magic_beans_schema.validate_driver()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if assigned driver has driver role
+    IF NOT EXISTS (
+        SELECT 1 FROM magic_beans_schema."user_role" ur
+        JOIN magic_beans_schema."roles" r ON ur.role_id = r.id
+        WHERE ur.user_id = NEW.driver_id AND r.role = 'driver'
+    ) THEN
+        RAISE EXCEPTION 'User % is not a driver', NEW.driver_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER check_driver
+BEFORE INSERT OR UPDATE ON magic_beans_schema."delivery"
+FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.validate_driver();
