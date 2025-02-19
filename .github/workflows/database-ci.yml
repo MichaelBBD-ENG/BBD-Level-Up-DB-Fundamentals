@@ -9,6 +9,11 @@ on:
       - "flyway.toml"
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
+
 jobs:
   deploy:
     name: 🐳 Deploy RDS Instance 
