@@ -2,7 +2,7 @@ name: Database Infrastructure 🐳 & Migration CI ✈️🧪
 
 on:
   push:
-    branches: ["main"]
+    branches: ["kyle/aws-iam"]
     paths:
       - "sql/**"
       - ".github/workflows/database-ci.yml"
@@ -25,10 +25,13 @@ jobs:
       - name: 🔑 Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # aws-region: ${{ secrets.AWS_REGION }}
+          # aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
+          role-to-assume: arn:aws:iam::978251882572:role/GitHubActionsOIDCRole
+          role-session-name: GitHubActions
           aws-region: ${{ secrets.AWS_REGION }}
-          aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
       
       - name: 🔍 Check if RDS instance exists
         id: check-rds
@@ -78,10 +81,13 @@ jobs:
       - name: 🔑 Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # aws-region: ${{ secrets.AWS_REGION }}
+          # aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
+          role-to-assume: arn:aws:iam::978251882572:role/GitHubActionsOIDCRole
+          role-session-name: GitHubActions
           aws-region: ${{ secrets.AWS_REGION }}
-          aws-session-token:  ${{ secrets.AWS_SESSION_TOKEN }}
       
       - name: 📍 Get RDS Endpoint
         id: get-endpoint
