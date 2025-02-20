@@ -1,5 +1,3 @@
-BEGIN;
-
 SET search_path TO magic_beans_schema;
 
 -- View for Top 5 Selling Beans
@@ -128,6 +126,3 @@ SELECT
 FROM "bean" b
 LEFT JOIN "magical_property" mp ON b.magical_property = mp.id
 LEFT JOIN "inventory" i ON b.id = i.bean_id;
-
-
-COMMIT;
