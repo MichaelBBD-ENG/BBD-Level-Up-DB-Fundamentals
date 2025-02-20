@@ -51,7 +51,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER validate_supplier_order_admin
+CREATE OR REPLACE TRIGGER validate_supplier_order_admin
 BEFORE INSERT OR UPDATE ON magic_beans_schema."supplier_orders"
 FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.validate_supplier_order_admin();
 
