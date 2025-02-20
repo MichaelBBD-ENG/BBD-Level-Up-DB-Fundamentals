@@ -1,5 +1,5 @@
 -- Function to predict expected date for stock to runout
-CREATE FUNCTION predict_inventory_runout(bean_id BIGINT)
+CREATE OR REPLACE FUNCTION magic_beans_schema.predict_inventory_runout(bean_id BIGINT)
 RETURNS DATE AS $$
 DECLARE 
     avg_daily_sales NUMERIC;
@@ -32,7 +32,7 @@ $$ LANGUAGE plpgsql;
 
 
 -- Procedure to cancel an order and add inventory back
-CREATE PROCEDURE cancel_order(IN order_id BIGINT)
+CREATE OR REPLACE PROCEDURE magic_beans_schema.cancel_order(IN order_id BIGINT)
 LANGUAGE plpgsql
 AS $$
 DECLARE 
@@ -56,7 +56,7 @@ END;
 $$;
 
 -- Function to find inactive users (haven't placed an order in 6 months)
-CREATE FUNCTION find_inactive_customers()
+CREATE OR REPLACE FUNCTION magic_beans_schema.find_inactive_customers()
 RETURNS TABLE(user_id BIGINT, username VARCHAR, last_order DATE) AS $$
 BEGIN
     RETURN QUERY
