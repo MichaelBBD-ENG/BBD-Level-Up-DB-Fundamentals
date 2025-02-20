@@ -30,14 +30,13 @@ BEGIN
     RETURNING "id" INTO new_contact_id;
 
  
-    INSERT INTO magic_beans_schema."users" (
-        "first_name", "last_name", "username", "hashed_password", "contact_id"
+    INSERT INTO magic_beans_schema."user" (
+        "first_name", "last_name", "username", "contact_id"
     )
-    VALUES (p_first_name, p_last_name, p_username, p_hashed_password, new_contact_id)
+    VALUES (p_first_name, p_last_name, p_username, new_contact_id)
     RETURNING "id" INTO new_user_id;
 
-    INSERT INTO magic_beans_schema."user_role" ("user_id", "role_id")
+    INSERT INTO magic_beans_schema."user_roles" ("user_id", "role_id")
     VALUES (new_user_id, role_id);
 END;
 $$;
-
