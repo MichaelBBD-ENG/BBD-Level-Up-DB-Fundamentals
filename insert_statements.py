@@ -6,7 +6,6 @@ columns = {
         "p_first_name": "STRING",
         "p_last_name": "STRING",
         "p_username": "STRING",
-        "p_hashed_password": "STRING",
         "p_phone": "STRING",
         "p_email": "STRING",
         "p_address": "STRING",
