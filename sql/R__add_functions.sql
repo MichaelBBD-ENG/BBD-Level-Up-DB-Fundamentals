@@ -55,3 +55,18 @@ CREATE OR REPLACE TRIGGER validate_supplier_order_admin
 BEFORE INSERT OR UPDATE ON magic_beans_schema."supplier_orders"
 FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.validate_supplier_order_admin();
 
+-- Procedure to update only the order status
+CREATE OR REPLACE PROCEDURE magic_beans_schema.update_order_status(
+    p_order_id INT,
+    p_order_status_id INT
+)
+AS $$
+BEGIN
+    -- Update the order status
+    UPDATE magic_beans_schema."order"
+    SET order_status_id = p_order_status_id
+    WHERE id = p_order_id;
+
+    COMMIT;
+END;
+$$ LANGUAGE plpgsql;
