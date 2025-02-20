@@ -129,7 +129,7 @@ jobs:
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
           -driver=org.postgresql.Driver \
-          -workingDirectory="MagicBean"
+          -workingDirectory="MagicBean" \
           -placeholders.database_name=${{ secrets.DB_NAME }} \
           -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
           -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
@@ -148,7 +148,7 @@ jobs:
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
           -driver=org.postgresql.Driver \
-          -workingDirectory="MagicBean"
+          -workingDirectory="MagicBean" \
           -placeholders.database_name=${{ secrets.DB_NAME }} \
           -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
           -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
@@ -172,7 +172,7 @@ jobs:
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
           -driver=org.postgresql.Driver \
-          -workingDirectory="MagicBean"
+          -workingDirectory="MagicBean" \
           -placeholders.database_name=${{ secrets.DB_NAME }} \
           -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
           -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
