@@ -1,3 +1,88 @@
+-- Add mock magical properties
+CALL magic_beans_schema.add_magical_property('Invisibility', 'Grants temporary invisibility to the user');
+CALL magic_beans_schema.add_magical_property('Teleportation', 'Allows instant travel to a known location');
+CALL magic_beans_schema.add_magical_property('Fireproof', 'Makes the user immune to fire');
+CALL magic_beans_schema.add_magical_property('Water Breathing', 'Enables breathing underwater');
+CALL magic_beans_schema.add_magical_property('Super Strength', 'Temporarily increases physical strength');
+CALL magic_beans_schema.add_magical_property('Lightning Speed', 'Gives the ability to move at lightning speed');
+CALL magic_beans_schema.add_magical_property('Healing Touch', 'Can heal minor wounds instantly');
+CALL magic_beans_schema.add_magical_property('Flight', 'Grants the power of flight');
+CALL magic_beans_schema.add_magical_property('Night Vision', 'Enhances vision in darkness');
+CALL magic_beans_schema.add_magical_property('Shape-shifting', 'Allows the user to change appearance');
+CALL magic_beans_schema.add_magical_property('Time Manipulation', 'Briefly slows or speeds up time');
+CALL magic_beans_schema.add_magical_property('Telekinesis', 'Enables movement of objects with the mind');
+CALL magic_beans_schema.add_magical_property('Animal Communication', 'Allows communication with animals');
+CALL magic_beans_schema.add_magical_property('Earth Control', 'Manipulates the ground and stones');
+CALL magic_beans_schema.add_magical_property('Wind Control', 'Gives mastery over wind currents');
+CALL magic_beans_schema.add_magical_property('Fire Control', 'Allows the user to generate and control fire');
+CALL magic_beans_schema.add_magical_property('Water Control', 'Grants the ability to manipulate water');
+CALL magic_beans_schema.add_magical_property('Ice Control', 'Can create and manipulate ice');
+CALL magic_beans_schema.add_magical_property('Illusions', 'Generates realistic illusions');
+CALL magic_beans_schema.add_magical_property('Mind Reading', 'Allows the user to read thoughts');
+CALL magic_beans_schema.add_magical_property('Sound Manipulation', 'Can control and alter sounds');
+CALL magic_beans_schema.add_magical_property('Camouflage', 'Blends perfectly into the surroundings');
+CALL magic_beans_schema.add_magical_property('Plant Growth', 'Speeds up plant growth instantly');
+CALL magic_beans_schema.add_magical_property('Stone Skin', 'Temporarily turns skin into stone for defense');
+CALL magic_beans_schema.add_magical_property('Poison Immunity', 'Grants resistance to all poisons');
+CALL magic_beans_schema.add_magical_property('Metal Bending', 'Allows control over metal objects');
+CALL magic_beans_schema.add_magical_property('Gravity Shift', 'Alters the effect of gravity');
+CALL magic_beans_schema.add_magical_property('Energy Absorption', 'Absorbs energy to power abilities');
+CALL magic_beans_schema.add_magical_property('Echo Location', 'Uses sound waves to navigate');
+CALL magic_beans_schema.add_magical_property('Regeneration', 'Rapidly heals from injuries');
+CALL magic_beans_schema.add_magical_property('Enhanced Reflexes', 'Greatly improves reaction time');
+CALL magic_beans_schema.add_magical_property('Force Field', 'Creates an invisible barrier for protection');
+CALL magic_beans_schema.add_magical_property('Magnetic Control', 'Manipulates magnetic fields');
+CALL magic_beans_schema.add_magical_property('Dream Walking', 'Can enter and interact in others’ dreams');
+CALL magic_beans_schema.add_magical_property('Shadow Step', 'Allows movement through shadows');
+CALL magic_beans_schema.add_magical_property('Soul Sight', 'Can see and interact with spirits');
+CALL magic_beans_schema.add_magical_property('Memory Manipulation', 'Modifies or erases memories');
+CALL magic_beans_schema.add_magical_property('Luck Enhancement', 'Temporarily increases good fortune');
+CALL magic_beans_schema.add_magical_property('Curse Removal', 'Lifts curses from individuals or objects');
+
+
+-- Add mock beans
+CALL magic_beans_schema.add_bean('Invisible Bean', 'A rare bean that vanishes as soon as it is consumed, rendering the user unseen by others.', 50.00, 'Invisibility');
+CALL magic_beans_schema.add_bean('Teleportation Bean', 'This enchanted bean allows its user to instantly travel to a familiar place by focusing on the location in their mind.', 100.00, 'Teleportation');
+CALL magic_beans_schema.add_bean('Flameguard Bean', 'A special bean that coats the user in an unyielding barrier against flames, making them fireproof.', 75.00, 'Fireproof');
+CALL magic_beans_schema.add_bean('Aqua Breath Bean', 'Consuming this bean grants the ability to breathe freely underwater for an indefinite amount of time.', 40.00, 'Water Breathing');
+CALL magic_beans_schema.add_bean('Titan Bean', 'This magical bean temporarily boosts the consumers physical strength to unthinkable levels.', 60.00, 'Super Strength');
+CALL magic_beans_schema.add_bean('Bolt Bean', 'Eat this bean and feel the rush of electricity speed through your veins, letting you move faster than the eye can follow.', 90.00, 'Lightning Speed');
+CALL magic_beans_schema.add_bean('Mender Bean', 'This bean speeds up the healing of minor injuries, making cuts and bruises disappear almost instantly.', 25.00, 'Healing Touch');
+CALL magic_beans_schema.add_bean('Skyward Bean', 'By eating this bean, one is granted the gift of flight, soaring through the skies with ease.', 120.00, 'Flight');
+CALL magic_beans_schema.add_bean('Nightseer Bean', 'A rare bean that sharpens vision, allowing the consumer to see in complete darkness as if it were daylight.', 55.00, 'Night Vision');
+CALL magic_beans_schema.add_bean('Chameleon Bean', 'When eaten, this bean allows the user to blend seamlessly with their surroundings, making them nearly invisible.', 70.00, 'Shape-shifting');
+CALL magic_beans_schema.add_bean('Chrono Bean', 'A quick burst from this bean lets the user manipulate time, slowing or speeding it as needed.', 150.00, 'Time Manipulation');
+CALL magic_beans_schema.add_bean('Mindforce Bean', 'This bean awakens the mind, giving the consumer the ability to move objects without lifting a finger.', 80.00, 'Telekinesis');
+CALL magic_beans_schema.add_bean('Wildheart Bean', 'This bean fosters a deep connection with animals, allowing seamless communication with them.', 65.00, 'Animal Communication');
+CALL magic_beans_schema.add_bean('Stonebinder Bean', 'With this bean, the user gains the power to manipulate and shape the very earth beneath them.', 95.00, 'Earth Control');
+CALL magic_beans_schema.add_bean('Windcaller Bean', 'When consumed, this bean allows the user to bend the wind, controlling breezes or summoning storms at will.', 85.00, 'Wind Control');
+CALL magic_beans_schema.add_bean('Inferno Bean', 'By eating this bean, one gains the power to summon and control fire, shaping flames as they please.', 110.00, 'Fire Control');
+CALL magic_beans_schema.add_bean('Hydro Bean', 'This magical bean grants the ability to manipulate water, turning it into a powerful tool or weapon.', 90.00, 'Water Control');
+CALL magic_beans_schema.add_bean('Frostbean', 'Consuming this bean allows the user to create and control ice, from freezing foes to sculpting intricate shapes.', 100.00, 'Ice Control');
+CALL magic_beans_schema.add_bean('Phantom Bean', 'This bean tricks the mind, creating realistic illusions that deceive all the senses.', 50.00, 'Illusions');
+CALL magic_beans_schema.add_bean('Thoughtweaver Bean', 'A rare bean that gives the consumer the ability to hear and understand the thoughts of those around them.', 120.00, 'Mind Reading');
+CALL magic_beans_schema.add_bean('Sonic Bean', 'A single bite of this bean allows the user to manipulate sound, altering or silencing it entirely.', 80.00, 'Sound Manipulation');
+CALL magic_beans_schema.add_bean('Veil Bean', 'The Veil Bean makes the user nearly undetectable, blending perfectly into their surroundings without leaving a trace.', 65.00, 'Camouflage');
+CALL magic_beans_schema.add_bean('Growthsprout Bean', 'This bean accelerates plant growth, causing anything planted to sprout and flourish in a matter of seconds.', 55.00, 'Plant Growth');
+CALL magic_beans_schema.add_bean('Fortress Bean', 'A defensive bean that coats the users skin in a hard, stone-like armor, making them nearly invulnerable.', 140.00, 'Stone Skin');
+CALL magic_beans_schema.add_bean('Toxinshield Bean', 'This powerful bean grants the consumer immunity to all known toxins, poisons, and venoms.', 110.00, 'Poison Immunity');
+CALL magic_beans_schema.add_bean('Metalmancer Bean', 'Upon consumption, the user gains the ability to manipulate metal, bending and shaping it with ease.', 100.00, 'Metal Bending');
+CALL magic_beans_schema.add_bean('Gravitas Bean', 'This bean alters gravity, either increasing or decreasing its pull depending on the users will.', 130.00, 'Gravity Shift');
+CALL magic_beans_schema.add_bean('Energi Bean', 'A rare bean that absorbs and stores ambient energy, letting the user replenish their magical power instantly.', 75.00, 'Energy Absorption');
+CALL magic_beans_schema.add_bean('Sonar Bean', 'This bean grants echolocation, allowing the user to detect their surroundings by sending out sound waves.', 60.00, 'Echo Location');
+CALL magic_beans_schema.add_bean('Vigormend Bean', 'Eating this bean causes the users body to regenerate quickly, healing injuries in no time at all.', 90.00, 'Regeneration');
+CALL magic_beans_schema.add_bean('Speedflare Bean', 'A quick boost of energy from this bean sharpens the users reflexes, making them incredibly fast.', 80.00, 'Enhanced Reflexes');
+CALL magic_beans_schema.add_bean('Barrier Bean', 'A potent bean that creates a force field around the user, protecting them from external threats.', 150.00, 'Force Field');
+CALL magic_beans_schema.add_bean('Magnetar Bean', 'This bean gives the consumer the ability to control magnetic forces, manipulating metal and electrical fields.', 120.00, 'Magnetic Control');
+CALL magic_beans_schema.add_bean('Dreamweaver Bean', 'A rare bean that lets the user enter and interact with others in the dream world, exploring hidden thoughts and secrets.', 200.00, 'Dream Walking');
+CALL magic_beans_schema.add_bean('Shadowveil Bean', 'The Shadowveil Bean allows the user to step into shadows, moving unseen between realms.', 130.00, 'Shadow Step');
+CALL magic_beans_schema.add_bean('Spiritseeker Bean', 'This enchanted bean grants the ability to see and communicate with spirits, both friendly and mischievous.', 110.00, 'Soul Sight');
+CALL magic_beans_schema.add_bean('Memoryshift Bean', 'A magical bean that enables the user to manipulate or erase memories, altering perception and history.', 150.00, 'Memory Manipulation');
+CALL magic_beans_schema.add_bean('Fortunebloom Bean', 'This bean enhances luck, causing favorable events to happen more frequently for the consumer.', 75.00, 'Luck Enhancement');
+CALL magic_beans_schema.add_bean('Purifier Bean', 'A calming and purifying bean that lifts curses and negative energy from the user or an object.', 85.00, 'Curse Removal');
+
+
+-- Add mock users
 CALL magic_beans_schema.add_user('Charlotta', 'Gowar', 'cgowar0', '$2a$04$pidZsSlrAquLhTmY1RCJSewYAWIlZcwflKDG5HEp35xBID2p9jORS', '882-436-1382', 'cgowar0@deliciousdays.com', '353 Bunting Terrace', 'customer');
 CALL magic_beans_schema.add_user('Nicolais', 'Kirsop', 'nkirsop1', '$2a$04$V53tVaUz2qBLR00y.a2nFuU4fqBizfyqSM0O5iEI9yBsUzy2wKMZS', '353-922-5790', 'nkirsop1@biglobe.ne.jp', '19 Moland Parkway', 'customer');
 CALL magic_beans_schema.add_user('Vanna', 'Haggerwood', 'vhaggerwood2', '$2a$04$eMQlFzQU9VSKTetO073Yv.2jNnCOzbJcB.KdvgT0qFZHw31WlasLa', '512-576-9475', 'vhaggerwood2@weather.com', '83 Heath Court', 'customer');
@@ -998,3 +1083,21 @@ CALL magic_beans_schema.add_user('Nadiya', 'Paike', 'npaikero', '$2a$04$bccYR6.b
 CALL magic_beans_schema.add_user('Ives', 'Lichtfoth', 'ilichtfothrp', '$2a$04$KupVD9qZAOIgCqLiTFIv5.uA8MEsBSNE0RZ78lEyUdwuJSo4RRr8S', '675-527-3518', 'ilichtfothrp@devhub.com', '74964 Sommers Lane', 'driver');
 CALL magic_beans_schema.add_user('Concordia', 'Marr', 'cmarrrq', '$2a$04$9.12Ai5tt936kYIXbxcBvepOibAbTF0KjK5yx3OrjJhTdy3SWC4X6', '453-283-6466', 'cmarrrq@wisc.edu', '04679 Alpine Way', 'customer');
 CALL magic_beans_schema.add_user('Raf', 'Meanwell', 'rmeanwellrr', '$2a$04$NjN3.zbod3KiJ1j4yLWcIOR4..5lEnN9vv3gQ.tDBtZBlODTjXaAK', '487-450-7248', 'rmeanwellrr@qq.com', '2161 Mayfield Street', 'customer');
+
+
+-- Add mock suppliers
+CALL magic_beans_schema.add_supplier_with_contact('Magic Beans Ltd', '123-456-7890', 'contact@magicbeans.com', '123 Bean St, Beantown');
+CALL magic_beans_schema.add_supplier_with_contact('Golden Harvest', '987-654-3210', 'info@goldenharvest.com', '456 Farm Rd, Greendale');
+CALL magic_beans_schema.add_supplier_with_contact('Evergreen Supplies', '555-123-4567', 'sales@evergreensupplies.com', '789 Greenway, Forest City');
+CALL magic_beans_schema.add_supplier_with_contact('Oceanic Imports', '222-333-4444', 'support@oceanicimports.com', '321 Seaside Ave, Harborview');
+CALL magic_beans_schema.add_supplier_with_contact('Skyline Traders', '777-888-9999', 'hello@skylinetraders.com', '654 Summit Dr, Metropolis');
+
+-- Add mock inventory for beans
+INSERT INTO magic_beans_schema.inventory (bean_id, quantity)
+SELECT 
+    id, 
+    CASE 
+        WHEN RANDOM() < 0.2 THEN 0
+        ELSE (RANDOM() * 180 + 20)::INTEGER
+    END
+FROM magic_beans_schema.bean;
