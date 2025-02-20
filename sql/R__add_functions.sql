@@ -1,48 +1,3 @@
--- Auto-Calaculate price in orders
-CREATE OR REPLACE FUNCTION magic_beans_schema.calculate_order_total()
-RETURNS TRIGGER AS $$
-BEGIN
-    UPDATE magic_beans_schema."orders" 
-
-    SET total_price = (
-        SELECT COALESCE(SUM(price), 0)
-        FROM magic_beans_schema."order_item" 
-        WHERE order_id = NEW.order_id
-    )
-    WHERE id = NEW.order_id;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE PLPGSQL;   
-
-CREATE OR REPLACE TRIGGER update_order_total
-AFTER INSERT OR UPDATE OR DELETE ON magic_beans_schema."order_item"
-FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.calculate_order_total();
-
--- Auto-calculate order item price
-CREATE OR REPLACE FUNCTION magic_beans_schema.calculate_item_price()
-RETURNS TRIGGER AS $$
-DECLARE
-    bean_price NUMERIC(10,2);
-BEGIN
-    SELECT price INTO bean_price 
-    FROM magic_beans_schema."bean"
-    WHERE id = NEW.bean_id;
-
-    IF bean_price IS NULL THEN
-        RAISE EXCEPTION 'Bean with id % not found', NEW.bean_id;
-    END IF;
-
-    NEW.price := bean_price * NEW.quantity;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE TRIGGER update_item_price
-BEFORE INSERT OR UPDATE ON magic_beans_schema."order_item"
-FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.calculate_item_price();
-
 -- Track status changes 
 CREATE OR REPLACE FUNCTION magic_beans_schema.log_order_status_change()
 RETURNS TRIGGER AS $$
@@ -56,7 +11,7 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE TRIGGER track_order_status
-AFTER UPDATE ON magic_beans_schema."orders"
+AFTER UPDATE ON magic_beans_schema."order"
 FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.log_order_status_change();
 
 CREATE OR REPLACE FUNCTION magic_beans_schema.validate_driver()
@@ -64,9 +19,9 @@ RETURNS TRIGGER AS $$
 BEGIN
     -- Check if assigned driver has driver role
     IF NOT EXISTS (
-        SELECT 1 FROM magic_beans_schema."user_role" ur
+        SELECT 1 FROM magic_beans_schema."user_roles" ur
         JOIN magic_beans_schema."roles" r ON ur.role_id = r.id
-        WHERE ur.user_id = NEW.driver_id AND r.role = 'driver'
+        WHERE ur.user_id = NEW.driver_id AND r.role = 'Driver'
     ) THEN
         RAISE EXCEPTION 'User % is not a driver', NEW.driver_id;
     END IF;
