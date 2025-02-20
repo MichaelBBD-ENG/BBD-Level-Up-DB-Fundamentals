@@ -2,7 +2,7 @@ name: Database Infrastructure 🐳 & Migration CI ✈️🧪
 
 on:
   push:
-    branches: ["kyle/aws-iam"]
+    branches: ["main"]
     paths:
       - "sql/**"
       - ".github/workflows/database-ci.yml"
