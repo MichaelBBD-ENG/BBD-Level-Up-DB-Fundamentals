@@ -29,6 +29,6 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER check_driver
+CREATE OR REPLACE TRIGGER check_driver
 BEFORE INSERT OR UPDATE ON magic_beans_schema."delivery"
 FOR EACH ROW EXECUTE FUNCTION magic_beans_schema.validate_driver();
