@@ -2,7 +2,6 @@ CREATE OR REPLACE PROCEDURE magic_beans_schema.add_user(
     p_first_name      VARCHAR(100),
     p_last_name       VARCHAR(100),
     p_username        VARCHAR(100),
-    p_hashed_password VARCHAR(255),
     p_phone           VARCHAR(20),
     p_email           VARCHAR(255),
     p_address         TEXT,
