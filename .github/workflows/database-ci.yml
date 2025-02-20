@@ -112,11 +112,6 @@ jobs:
           -password=${{ secrets.DB_PASSWORD }} \
           -driver=org.postgresql.Driver \
           -workingDirectory="MagicBean"
-          -placeholders.database_name=${{ secrets.DB_NAME }} \
-          -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
-          -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
-          -placeholders.analyst_role_name=${{ secrets.DB_ANALYST_ROLE_NAME }} \
-          -placeholders.analyst_role_password=${{ secrets.DB_ANALYST_ROLE_PASSWORD }} \
 
       - name: 🔄 Run Flyway migrations
         id: migration
@@ -134,7 +129,7 @@ jobs:
           -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
           -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
           -placeholders.analyst_role_name=${{ secrets.DB_ANALYST_ROLE_NAME }} \
-          -placeholders.analyst_role_password=${{ secrets.DB_ANALYST_ROLE_PASSWORD }} \
+          -placeholders.analyst_role_password=${{ secrets.DB_ANALYST_ROLE_PASSWORD }}
 
       - name: ✅ Validate Flyway migrations
         id: validate
@@ -148,12 +143,7 @@ jobs:
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
           -driver=org.postgresql.Driver \
-          -workingDirectory="MagicBean" \
-          -placeholders.database_name=${{ secrets.DB_NAME }} \
-          -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
-          -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
-          -placeholders.analyst_role_name=${{ secrets.DB_ANALYST_ROLE_NAME }} \
-          -placeholders.analyst_role_password=${{ secrets.DB_ANALYST_ROLE_PASSWORD }} \
+          -workingDirectory="MagicBean"
 
       - name: 🛑 Fail if validation failed
         if: steps.validate.outcome == 'failure'
@@ -172,9 +162,4 @@ jobs:
           -user=${{ secrets.DB_USERNAME }} \
           -password=${{ secrets.DB_PASSWORD }} \
           -driver=org.postgresql.Driver \
-          -workingDirectory="MagicBean" \
-          -placeholders.database_name=${{ secrets.DB_NAME }} \
-          -placeholders.admin_role_name=${{ secrets.DB_ADMIN_ROLE_NAME }} \
-          -placeholders.admin_role_password=${{ secrets.DB_ADMIN_ROLE_PASSWORD }} \
-          -placeholders.analyst_role_name=${{ secrets.DB_ANALYST_ROLE_NAME }} \
-          -placeholders.analyst_role_password=${{ secrets.DB_ANALYST_ROLE_PASSWORD }} \
+          -workingDirectory="MagicBean"
