@@ -2,8 +2,8 @@ CREATE OR REPLACE PROCEDURE magic_beans_schema.insert_supplier_order(
     IN p_admin_id INT,
     IN p_supplier_id INT,
     IN p_status VARCHAR(50),
-    IN p_invoice UUID DEFAULT NULL,
-    IN p_items JSONB -- JSON array of {bean_id, quantity}
+    IN p_items JSONB,
+	IN p_invoice UUID DEFAULT NULL
 )
 LANGUAGE plpgsql
 AS $$
