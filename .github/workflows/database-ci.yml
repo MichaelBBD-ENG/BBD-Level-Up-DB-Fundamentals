@@ -2,7 +2,7 @@ name: Database Infrastructure & Migration CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["no-branch"]
     paths:
       - "sql/**"
       - ".github/workflows/database-ci.yml"
